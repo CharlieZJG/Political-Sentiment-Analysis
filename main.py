@@ -131,41 +131,49 @@ def topic_data_crawling():
 
 
 def pie_chart_drawing(topic,party):
-    fig = plt.figure()
-    df = pd.read_csv("static/datamodel/all_data.csv")
-    data_arr = []
-    count_df = df.groupby(['topic', 'subreddit']).size().reset_index(name='counts')
-    # print(count_df)
-    try:
-        democrats_data = count_df[(count_df['topic'] == topic) & (count_df['subreddit'] == 'democrats')].counts.values[0]
-    except:
-        democrats_data = 0
-    try:
-        republican_data = count_df[(count_df['topic'] == topic) & (count_df['subreddit'] == 'Republican')].counts.values[0]
-    except:
-        republican_data = 0
-    try:
-        conservative_data = count_df[(count_df['topic'] == topic) & (count_df['subreddit'] == 'Conservative')].counts.values[0]
-    except:
-        conservative_data = 0
-    try:
-        liberal_data = count_df[(count_df['topic'] == topic) & (count_df['subreddit'] == 'Liberal')].counts.values[0]
-    except:
-        liberal_data = 0
-    data_arr.append(democrats_data)
-    data_arr.append(republican_data)
-    data_arr.append(conservative_data)
-    data_arr.append(liberal_data)
-    # print(data_arr)
-    labels = ["democrats", "Republican", "Conservative", "Liberal"]
-    explode_index = labels.index(party)
-    explode = [0, 0, 0, 0]
-    explode[explode_index] = 0.2
-    plt.pie(data_arr, labels=labels, explode=explode, shadow=True,autopct='%1.1f%%')
-    plt.axis('equal')
-    plt.show()
-    fig.savefig("static/datamodel/" + topic + '_' + party + '.png',transparent=True)
-    return_img_data = {'image_url': ["static/datamodel/" + topic + '_' + party + '.png']}
+    """
+    In debugging mode, the commented code works fine because
+    it is fine to dynamically draw the
+    pie charts and sent to the front end. However, Matplotlib
+    forbids opening a GUI window on the server trying to rendering
+    the figure to a png and then shipping it to the user as the payload of a response.
+    Thus, the solution is to draw all pie charts before hand and save to static folder.
+    """
+    # fig = plt.figure()
+    # df = pd.read_csv("static/datamodel/all_data.csv")
+    # data_arr = []
+    # count_df = df.groupby(['topic', 'subreddit']).size().reset_index(name='counts')
+    # # print(count_df)
+    # try:
+    #     democrats_data = count_df[(count_df['topic'] == topic) & (count_df['subreddit'] == 'democrats')].counts.values[0]
+    # except:
+    #     democrats_data = 0
+    # try:
+    #     republican_data = count_df[(count_df['topic'] == topic) & (count_df['subreddit'] == 'Republican')].counts.values[0]
+    # except:
+    #     republican_data = 0
+    # try:
+    #     conservative_data = count_df[(count_df['topic'] == topic) & (count_df['subreddit'] == 'Conservative')].counts.values[0]
+    # except:
+    #     conservative_data = 0
+    # try:
+    #     liberal_data = count_df[(count_df['topic'] == topic) & (count_df['subreddit'] == 'Liberal')].counts.values[0]
+    # except:
+    #     liberal_data = 0
+    # data_arr.append(democrats_data)
+    # data_arr.append(republican_data)
+    # data_arr.append(conservative_data)
+    # data_arr.append(liberal_data)
+    # # print(data_arr)
+    # labels = ["democrats", "Republican", "Conservative", "Liberal"]
+    # explode_index = labels.index(party)
+    # explode = [0, 0, 0, 0]
+    # explode[explode_index] = 0.2
+    # plt.pie(data_arr, labels=labels, explode=explode, shadow=True,autopct='%1.1f%%')
+    # plt.axis('equal')
+    # plt.show()
+    # fig.savefig("static/datamodel/pie_charts/" + topic + '_' + party + '.png',transparent=True)
+    return_img_data = {'image_url': ["static/datamodel/pie_charts/" + topic + '_' + party + '.png']}
     return return_img_data
 # pie_chart_drawing("/static/datamodel/prochoice","Liberal")
 
@@ -381,4 +389,4 @@ def prediction():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='127.0.0.1',port=8080,debug=True)
