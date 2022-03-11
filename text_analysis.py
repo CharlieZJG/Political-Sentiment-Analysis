@@ -1,9 +1,10 @@
 import nltk
 from nltk.corpus import wordnet
 from textblob import TextBlob
-from profanity_check import predict_prob
 import jieba.posseg as psg
 from profanityfilter import ProfanityFilter
+from linguin import Linguin
+
 """
 Extract names from text
 """
@@ -45,11 +46,11 @@ def extract_nouns(text):
     return blob.sentences
 
 
-"""
-check profanity
-"""
-def check_profanity(text):
-    return predict_prob(text)
+# """
+# check profanity
+# """
+# def check_profanity(text):
+#     return predict_prob(text)
 
 
 """
@@ -82,3 +83,14 @@ def hans_count(str):
         if '\u4e00' <= s <= '\u9fef':
             hans_total += 1
     return hans_total
+
+
+def linguin_profanity(text):
+    linguin = Linguin("W813QYHHJ2yPxrZiZzcLv21bNVznp1tAgkjC2FPphn2bjac6toXunFktidmZbFuW")
+
+    response = linguin.detect_profanity(text)
+    # # response is a LinguinResponse object
+    # response.is_success
+    # # True
+
+    return response.result

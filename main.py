@@ -279,20 +279,21 @@ def prediction():
                 outcome += 'right-wing comment'
             #loaded_model = pickle.load(open('static/datamodel/en_hate-speech_model.lr', 'rb'))
             #hate_score = loaded_model.predict(word_embedding)
-            hate_score = text_analysis.check_profanity([political_speech])
+            # hate_score = text_analysis.check_profanity([political_speech])
+            hate_score = text_analysis.linguin_profanity(political_speech)
 
-            if hate_score[0] > 0.5:
+            if hate_score['score'] > 0.5:
                 outcome += '/hate speech'
-            if hate_score[0] < 0.3:
+            if hate_score['score'] < 0.3:
                 severity = "low"
                 outcome += '/non-hate'
-            elif 0.3 < hate_score[0] < 0.6:
+            elif 0.3 < hate_score['score'] < 0.6:
                 severity = "medium"
-            elif hate_score[0] > 0.6:
+            elif hate_score['score'] > 0.6:
                 severity = "high"
             else:
                 severity = "Cannot detect severity"
-            hate_score = str(100* hate_score[0]) + '%'
+            hate_score = str(100* hate_score['score']) + '%'
             #  speech length
             political_speech_length = len(political_speech.split())
 
