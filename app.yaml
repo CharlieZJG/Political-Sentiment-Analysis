@@ -12,7 +12,3 @@ handlers:
 - url: /.*
   script: auto
 
-resources:
-  cpu: 5
-  memory_gb: 8
-  disk_size_gb: 20
