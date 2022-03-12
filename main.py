@@ -193,8 +193,9 @@ def check_comment(id):
 
 def cross_checking_data(topic,party):
     return_data = {}
-    df = pd.read_csv("static/datamodel/all_data.csv")
+    df = pd.read_csv("static/datamodel/all_data.csv",sep=",")
     df.set_index(['topic', 'subreddit'], inplace=True)
+    print(df)
     df = df.sort_index()
     try:
         kept_df = df.loc[(topic, party)]

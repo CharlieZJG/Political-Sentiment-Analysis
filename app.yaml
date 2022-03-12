@@ -2,12 +2,12 @@ runtime: python
 env: flex
 entrypoint: gunicorn -b :$PORT main:app
 runtime_config:
-    python_version: 3
+    python_version: 3.7
 
 resources:
-  cpu: 8
-  memory_gb: 47.6
-  disk_size_gb: 80
+  cpu: 4
+  memory_gb: 19.6
+  disk_size_gb: 40
 
 liveness_check:
   check_interval_sec: 30
@@ -16,7 +16,7 @@ liveness_check:
   success_threshold: 2
 
 manual_scaling:
-  instances: 10000
+  instances: 2
 # This sample incurs costs to run on the App Engine flexible environment.
 # The settings below are to reduce costs during testing and are not appropriate
 # for production use. For more information, see:
