@@ -1,7 +1,22 @@
-runtime: python38
+runtime: python
+env: flex
 entrypoint: gunicorn -b :$PORT main:app
-default_expiration: "4d 1h"
-instance_class: F4_1G
+runtime_config:
+    python_version: 3
+
+resources:
+  cpu: 8
+  memory_gb: 47.6
+  disk_size_gb: 80
+
+liveness_check:
+  check_interval_sec: 30
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+
+manual_scaling:
+  instances: 10000
 # This sample incurs costs to run on the App Engine flexible environment.
 # The settings below are to reduce costs during testing and are not appropriate
 # for production use. For more information, see:
