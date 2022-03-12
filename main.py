@@ -269,7 +269,7 @@ def prediction():
 
             prediction_json = json.loads(prediction_return_data.text)
             print(json.dumps(prediction_json, indent=4))
-            svm_politics_model = pickle.load(open('static/datamodel/en_politics_model.svm', 'rb'))
+            svm_politics_model = pickle.load(open('static/datamodel/en_politics_model.ensvm', 'rb'))
             word_embedding = bert.generate_sentence_embedding(political_speech, en_tokenizer, en_bert_model)
             probs_list = svm_politics_model.predict_proba(word_embedding)
             republican_probs_value = probs_list[0][0]
