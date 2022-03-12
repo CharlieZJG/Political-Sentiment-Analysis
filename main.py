@@ -347,7 +347,7 @@ def prediction():
                 outcome += 'left-wing comment'
             else:
                 outcome += 'right-wing comment'
-            cn_loaded_model = pickle.load(open('static/datamodel/cn_hate-speech_model.svm', 'rb'))
+            cn_loaded_model = pickle.load(open('static/datamodel/cn_hate-speech_model.cnsvm', 'rb'))
             cn_hate_prob_list = cn_loaded_model.predict_proba(word_embedding)
             print(cn_hate_prob_list)
             hate_score = cn_hate_prob_list[0][1]  # sexiest is labeled as 1
