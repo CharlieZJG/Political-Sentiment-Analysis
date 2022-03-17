@@ -1148,6 +1148,20 @@ hr.solid {
   background-color: #323232;
   font-size: 16px;
 }
+.comment-button {
+  display:inline-block;
+  padding:0.3em 1.2em;
+  margin:0 0.3em 0.3em 0;
+  border-radius:2em;
+  box-sizing: border-box;
+  text-decoration:none;
+  font-family:'Roboto',sans-serif;
+  font-weight:300;
+  color:#FFFFFF;
+  background-color:#4eb5f1;
+  text-align:center;
+  transition: all 0.2s;
+}
 .keyword-button {
   display:inline-block;
   padding:0.3em 1.2em;
@@ -1176,7 +1190,8 @@ hr.solid {
 }
 
 .field-label-2 {
-  font-size: 16px;
+  margin-top: 10px;
+  font-size: 24px;
 }
 
 .background-video-5 {
@@ -1365,7 +1380,45 @@ hr.solid {
   margin-top: 100px;
   margin-bottom: 100px;
 }
+.div_keyword_class{
+  margin-top: 100px;
+  height: 610px;
+}
+#credentials-id{
+  margin-left: 410px;
+  padding-top:80px;
+  /*margin-bottom: 10px;*/
+  /*padding-bottom: -10px;*/
 
+  font-size: 20px;
+}
+#replycomment-field-id {
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+#actual-comment-id {
+  padding-top:5px;
+  border-top: 5px;
+  height:400px;
+}
+#Reply-id{
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.form-1_2 {
+  display: block;
+  height: 400px;
+  width: 1200px;
+  margin-left: 100px ;
+  margin-right: 100px ;
+  grid-auto-columns: 1fr;
+  -ms-grid-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
+  -ms-grid-rows: auto auto;
+  grid-template-rows: auto auto;
+  /*background-position: 50% 0%;*/
+  /*background-size: auto;*/
+}
 .form-3 {
   display: block;
   height: 600px;

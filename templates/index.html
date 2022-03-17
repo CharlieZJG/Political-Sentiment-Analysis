@@ -61,14 +61,6 @@
 
         </div>
       </div>
-{#      <div class="slide _3 w-slide">#}
-{#        <div class="w-container">#}
-{#          <h1 class="main-heading">Some thing About me</h1>#}
-{#          <h1 class="main-heading bold"></h1>#}
-{#          <div class="horizontal-bar"></div>#}
-{#          <div class="main-subheading">They love us so much they tell all of their friends.</div>#}
-{#        </div>#}
-{#      </div>#}
     </div>
     <div class="slider-nav w-slider-nav"></div>
   </div>
@@ -127,7 +119,7 @@
         <div class="w-col w-col-4">
           <!--  topic data crawling form   -->
           <div class="w-form">
-            <form id="topic-data-crawling-form-id" name="topic-data-crawling-form" data-name="Email Form 3" method="post" class="form-2">
+            <form  id="topic-data-crawling-form-id" name="topic-data-crawling-form" data-name="Email Form 3" method="post" class="form-2">
               <!--  display the selected topic from previous section   -->
               <!-- <div id = 'selected-topic' class="text-block-6">This is supposed to display the selected topic in the previous section</div> -->
               <textarea readonly name ='selected_topic' id='selected-topic' ></textarea>
@@ -150,7 +142,6 @@
               <div>Thank you! Your submission has been received! It takes a few seconds to process it.</div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -162,13 +153,29 @@
 
         <table id ="s2-crawled-topic-id" class="s2-crawled-topic_table" >
             <tbody id ="s2-crawled-topic-tbody-id">
-{#            <tr>#}
-{#                <th>TOPIC NAME</th><th>COMMENT BODY</th>#}
-{#            </tr>#}
+
             </tbody>
         </table>
       </div>
     </div>
+         <!--  comment reply section  -->
+        <div id = "reply-comment-div-id" class="div_keyword_class" >
+            <form id="reply_comment-form-id" method="post" class="form-1_2">
+                <label id='head-id' for="reply-Field" class="field-label-3">Replying to comment id:</label>
+
+                <div id="credentials-id">
+                <label for="username">Reddit Username:</label>
+                <input type="text" autocomplete="off" id="username" name="username">
+                <label for="pass">Password:</label>
+                <input type="password" autocomplete="off" id="pass" name="password" required>
+                 </div>
+                 <div id="actual-comment-id">
+                    <textarea rows="10" cols="140" id="reply_comment-field-id" type="text" class="text-field w-input" autofocus="true" maxlength="1000" name="reply-Field" data-name="reply Field" placeholder="Reply the comment here" required=""></textarea>
+                    <input id="Reply-id" autocomplete="off" type="submit" value="Reply" data-wait="Please wait..." class="submit-button-3 w-button">
+                 </div>
+            </form>
+
+      </div>
   </div>
 
   <div class="section-14 wf-section">
@@ -179,7 +186,7 @@
   <div id="section3" class="section5 wf-section">
     <div class="container-3 w-container">
       <div class="w-form">
-        <form id="cross-checking-form-id" name="wf-form-Cross-Party" data-name="Cross Party" method="post">
+        <form  id="cross-checking-form-id" name="wf-form-Cross-Party" data-name="Cross Party" method="post">
             <label for="Topic-Name" class="field-label-8">Select A Political Topic</label>
             <select id="section3-topic-name-id" name="Topic-Name" data-name="Topic Name" required="" class="w-select">
             <option value="vaxxhappened">Pro-Vaccine</option>
@@ -242,14 +249,15 @@
   </div>
   <div class="wf-section">
     <div class="w-form">
-      <form id="prediction-form-id" name="prediction-form4" data-name="prediction-data-form" method="post" class="form-3">
+      <form  id="prediction-form-id" name="prediction-form4" data-name="prediction-data-form" method="post" class="form-3">
           <label for="Prediction-Field" class="field-label-3">Comment Prediction</label>
           <select id="language-id" name="language" required=""  class="language-select-class">
                 <option value="English">English</option>
                 <option value="zh_Chinese">简体中文</option>
           </select>
           <textarea rows="15" cols="70" id="prediction-field-id" type="text" class="text-field w-input" autofocus="true" maxlength="1000" name="Prediction-Field" data-name="Prediction Field" placeholder="Please Enter a political-related speech" required=""></textarea>
-          <input id="Analyze and Filter-id" type="submit" value="Analyze and Filter" data-wait="Please wait..." class="submit-button-3 w-button"></form>
+          <input id="Analyze and Filter-id" type="submit" value="Analyze and Filter" data-wait="Please wait..." class="submit-button-3 w-button">
+      </form>
     </div>
 
   </div>
@@ -340,17 +348,10 @@
     }
 
     $(document).ready(function(){
-        {#$('#democrats-a').on('click',function(){#}
-        {#    $("#subreddit-selection2").hide();#}
-        {#    $("#subreddit-selection1").show();#}
-        {##}
-        //{#});#}
-        {#$('#republican-a').on('click',function(){#}
-        {#    $("#subreddit-selection1").hide();#}
-        {#    $("#subreddit-selection2").show();#}
-        //{#});#}
-
+        $("#reply-comment-div-id").hide();
         $("#wechat_div-id").hide();
+        $("#section3-cross_checking-id").hide();
+
        $('#wechat-id').on('click',function(){
            let weChat = 'Gzjoo1021';
            if($("#wechat_div-id").is(":visible")){
@@ -381,9 +382,11 @@
                     }, 1300 );
     });
         $('#prediction-result-id').hide()
+        const reply_comment_list = []
         $('#topic-data-crawling-form-id').on('submit',function() {
+            $("#reply-comment-div-id").hide()
             var nextSection1 = $('#sention2-crawled-data');
-            $('html, body').animate({
+                     $('html, body').animate({
                         scrollTop: nextSection1.offset().top -300
                     }, 1300 );
             $('#s2-crawled-topic-tbody-id').empty();
@@ -406,21 +409,41 @@
                 data: JSON.stringify(input),
                 async: true,
                 success: function (return_data,textStatus, jqXHR) {
-                    // scroll to next section
-
-
-                    
                     console.log(jqXHR.status)
+
                     // parse the return_data and plug into the table
                     $('#s2-crawled-topic-id > tbody:last-child').append('<th>TOPIC TITLE</th><th>COMMENT BODY</th>');
+                    reply_comment_list.length = 0
+                    console.log(reply_comment_list)
+                    let comment_idx = 1
                     for (let post in return_data) {
+                        let comment_id = ''
+
                         let comment_arr = return_data[post]
                         for (let comment of comment_arr) {
-                            console.log(post)
-                            console.log(comment)
-                            $('#s2-crawled-topic-id > tbody:last-child').append('<tr><td>' + post+ '</td><td>' + comment+ '</td></tr>');
+                           reply_comment_list.push(comment.slice(0,7))
+
+                            $('#s2-crawled-topic-id > tbody:last-child').append("<tr><td>" + post.slice(6,post.length)+ "</td><td>" + comment.slice(7,comment.length)+ "</td><td><input id='reply_comment_id' value='Save this comment' type='button' class='comment-button'/></td></tr>");
+                            $('#reply_comment_id').attr('id',comment.slice(0,7));
+
                         }
+
                     }
+                    console.log(reply_comment_list)
+
+                    $('#s2-crawled-topic-tbody-id').on('click','input', function(obj) {
+                        $('b').empty()
+                        console.log(obj.target.id)
+                        $("#reply-comment-div-id").show();
+                        var nextSection1_2 = $('#reply-comment-div-id');
+                        $('html, body').animate({
+                            scrollTop: nextSection1_2.offset().top -300
+                        }, 1300 );
+                        $("#head-id").append('<b id="selected_commentid" class="field-label-2">' + ' ' +obj.target.id + '</b>');
+
+                    });
+                    console.log($('b').text())
+
                 },
                 error: function(jqXHR,textStatus){
                     var err_msg = '';
@@ -443,12 +466,11 @@
                 }
             });
         });
+
+
         // second ajax request
         $('#cross-checking-form-id').on('submit',function() {
-            var nextSection2 = $('#section3-cross_checking-id');
-            $('html, body').animate({
-                        scrollTop: nextSection2.offset().top -300
-                    }, 1300 );
+
             $('#s3-cross-checking-tbody-id').empty();
             $('#pie-chart-div-id').empty();
             $('#keyword1').find('span').hide();
@@ -472,7 +494,11 @@
                 data: JSON.stringify(input),
                 async: true,
                 success: function (return_data,textStatus, jqXHR) {
-                    
+                    $("#section3-cross_checking-id").show();
+                    var nextSection2 = $('#section3-cross_checking-id');
+                    $('html, body').animate({
+                        scrollTop: nextSection2.offset().top -300
+                    }, 1300 );
                     console.log(jqXHR.status)
                     if (Object.keys(return_data).length > 1){
                         let return_img_data = (return_data.image_url)[0]
@@ -659,10 +685,7 @@
 
             // Third ajax request
         $('#prediction-form-id').on('submit',function() {
-            var nextSection3_3 = $('#prediction-result-id');
-            $('html, body').animate({
-                        scrollTop: nextSection3_3.offset().top + 3600
-                    }, 2500 );
+
 
             $('#left-score-id').empty()
             $('#right-score-id').empty()
@@ -687,6 +710,10 @@
                 data: JSON.stringify(input),
                 async: true,
                 success: function (return_data,textStatus, jqXHR) {
+                    var nextSection3_3 = $('#text-filtering-id');
+                    $('html, body').animate({
+                        scrollTop: nextSection3_3.offset().top + 3100
+                    }, 1500 );
                     console.log(jqXHR.status)
                     console.log(return_data.democrats)
                     $('#filtered-text-id').textillate({
@@ -728,6 +755,54 @@
                 }
             });
     });
+        // reply comment ajax request
+        $('#reply_comment-form-id').on('submit',function() {
+            //alert("your reply has been uodated, check reddit for more information")
+            {#let message = return_data[return_message];#}
+            {#console.log(message)#}
+            let reply_comment_body = $('#reply_comment-field-id').val();
+            let comment_id = $('b').text();
+            let user_name = $('#username').val()
+            let password = $('#pass').val()
+            let input = {
+                'reply_comment_body': reply_comment_body,
+                'comment_id': comment_id,
+                'user_name': user_name,
+                'password': password
+            };
+            $.ajax({
+                url: '/reply_comments',
+                type: 'post',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(input),
+                async: true,
+                success: function (return_data) {
+
+                    console.log("auto-processing")
+                },
+                error: function(jqXHR,textStatus){
+                    var err_msg = '';
+                    if (jqXHR.status === 0) {
+                        err_msg = 'Not connect.\n Verify Network.';
+                    } else if (jqXHR.status == 404) {
+                        err_msg = 'Requested page not found. [404]';
+                    } else if (jqXHR.status == 500) {
+                        err_msg = 'Praw request failed, Internal Server Error [500].';
+                    } else if (textStatus === 'parsererror') {
+                        err_msg = 'Requested JSON parse failed.';
+                    } else if (textStatus === 'timeout') {
+                        err_msg = 'Praw request Time out. Please refresh page and try again!';
+                    } else if (textStatus === 'abort') {
+                        err_msg = 'Ajax request aborted.';
+                    } else {
+                        err_msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                    }
+                    alert(err_msg);
+                }
+            });
+
+        });
     });
   </script>
 

@@ -3,7 +3,7 @@ Author: Zejun Gong
 Date: 3/Feb/2022
 """
 import pickle
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify,redirect
 import praw
 import os
 import pandas as pd
@@ -35,51 +35,61 @@ tisane_headers = {
     'Ocp-Apim-Subscription-Key': 'da1791fc7a024a49a67ff7c7a0d94949'
 }
 
-
+flag =""
 # generate a reddit instance
 reddit = praw.Reddit(client_id='3HaNtnWTfosCmcDUHfoyBA',
                      client_secret='yd7zXATTyuu13OLERzTVJF_poYG3qg',
                      user_agent='Political data crawling')
 
 
-def reddit_query(subreddit_name,choice,num_posts,num_comments):
+def reddit_query(subreddit_name,choice,num_posts=1,num_comments=1,added_comment=None):
     subreddit = reddit.subreddit(subreddit_name)
     if choice == 'Top':
         return_dict = {}
+        post_id_list = []
         for post in subreddit.top(limit=num_posts):
             comment_arr = []
             _id = post.id
             submission = reddit.submission(id=_id)
+            post_id_list.append(submission.id)
             submission_name = submission.title
             # print(submission_name)
             submission.comments.replace_more(limit=None)
             for comment in submission.comments.list()[:num_comments]:  # check the comment forest
+                # reply to this comment
+                comment_id = comment.id
                 comment = comment.body
                 if True:
                     comment = os.linesep.join([s for s in comment.splitlines() if s])  # remove empty lines
                     comment = comment.strip()
+                    comment = str(comment_id) + comment
                 comment_arr.append(comment)
                 # print(comment.body)
-            return_dict[submission_name] = comment_arr
 
+            return_dict[str(submission.id)+submission_name] = comment_arr
+        # print(return_dict)
     elif choice == 'Hot':
         return_dict = {}
+        post_id_list =[]
         for post in subreddit.hot(limit=num_posts):
             comment_arr = []
             _id = post.id
             try:
                 submission = reddit.submission(id=_id)
+                post_id_list.append(submission.id)
                 submission_name = submission.title
                 # print(submission_name)
                 submission.comments.replace_more(limit=None)
                 for comment in submission.comments.list()[:num_comments]:  # check the comment forest
+                    comment_id = comment.id
                     comment = comment.body
                     if True:
                         comment = os.linesep.join([s for s in comment.splitlines() if s])  # remove empty lines
                         comment = comment.strip()
+                        comment = str(comment_id) + comment
                     comment_arr.append(comment)
                     # print(comment.body)
-                return_dict[submission_name] = comment_arr
+                return_dict[str(submission.id)+submission_name] = comment_arr
             except:
                 print("exception")
                 continue
@@ -95,22 +105,19 @@ def reddit_query(subreddit_name,choice,num_posts,num_comments):
                 # print(submission_name)
                 submission.comments.replace_more(limit=None)
                 for comment in submission.comments.list()[:num_comments]:  # check the comment forest
+                    comment_id = comment.id
                     comment = comment.body
                     if True:
                         comment = os.linesep.join([s for s in comment.splitlines() if s])  # remove empty lines
                         comment = comment.strip()
+                        comment = str(comment_id) + comment
                     comment_arr.append(comment)
                     # print(comment.body)
-                return_dict[submission_name] = comment_arr
+                return_dict[str(submission.id)+submission_name] = comment_arr
             except:
                 print("exception")
                 continue
-    print(return_dict)
     return return_dict
-
-@app.route('/')
-def load_website():
-    return render_template('index.html')
 
 @app.route('/topic_data_crawling',methods=["GET","POST"])
 def topic_data_crawling():
@@ -128,6 +135,36 @@ def topic_data_crawling():
         # print(return_data)
         return jsonify(return_data)
 
+
+@app.route('/reply_comments',methods=["GET","POST"])
+def upload_comments():
+    if request.method == "POST":
+        request_data = request.get_json()  # python dictionary
+        comment_body = request_data['reply_comment_body']  # string
+        comment_id = request_data['comment_id']
+        comment_id = comment_id[1:]
+        user_name = request_data['user_name']
+        password = request_data['password']
+        reddit_credentials = praw.Reddit(client_id='3HaNtnWTfosCmcDUHfoyBA',
+                                         client_secret='yd7zXATTyuu13OLERzTVJF_poYG3qg',
+                                         user_agent='Political data crawling',
+                                         username=user_name,
+                                         password=password)
+        comment_instance = reddit_credentials.comment(comment_id)
+        print(comment_instance)
+        try:
+            comment_instance.reply(comment_body)
+            #comment_instance.unsave()
+            return render_template("index.html")
+        except:
+            return "That's a piece of history now; it's too late to reply to it."
+
+@app.route('/',methods=["GET","POST"])
+def load_website():
+    if request.method == "GET":
+        return render_template('index.html')
+    else:
+        return "succeed! login to your reddit account for reference"
 
 def pie_chart_drawing(topic,party):
     """
@@ -209,10 +246,18 @@ def cross_checking_data(topic,party):
     comment_counts = kept_df.groupby(level=[0]).size().reset_index(name='counts')
     cleaned_comment_counts = comment_counts[comment_counts["counts"] >= 3]
     cleaned_index_list = cleaned_comment_counts['topic_post_id'].to_list()
-    top3_index_list = cleaned_index_list[:3]
+    top3_index_list = cleaned_index_list[:3] # a list of all post ids with comments_num > 3
     # print(top3_index_list)
     # get a list of comment ids(only top three inorder to display the comment body)
     if len(top3_index_list) == 3:
+        # for i in range(len(cleaned_index_list)):
+        #     if len(top3_index_list) <= 10:
+        #         top1_comment_list = ((kept_df.loc[top3_index_list[i]])['comment_id'].to_list())[:3]
+        #     else:
+        #         top1_comment_list = ((kept_df.loc[top3_index_list[i]])['comment_id'].to_list())[:1]
+        #     top1_comment_list = [check_comment(i) for i in top1_comment_list]
+        #     return_data[top3_index_list[i]] = top1_comment_list
+        #     return_data[check_submission(top3_index_list[i])] = return_data.pop(top3_index_list[i])
         top3_comment_list1 = ((kept_df.loc[top3_index_list[0]])['comment_id'].to_list())[:3]
         top3_comment_list2 = ((kept_df.loc[top3_index_list[1]])['comment_id'].to_list())[:3]
         top3_comment_list3 = ((kept_df.loc[top3_index_list[2]])['comment_id'].to_list())[:3]
@@ -223,10 +268,10 @@ def cross_checking_data(topic,party):
         return_data[top3_index_list[0]] = top3_comment_list1
         return_data[top3_index_list[1]] = top3_comment_list2
         return_data[top3_index_list[2]] = top3_comment_list3
-        # rename the old keys(post id) to new keys(post title)
+        #rename the old keys(post id) to new keys(post title)
         for i in range(3):
             return_data[check_submission(top3_index_list[i])] = return_data.pop(top3_index_list[i])
-        #print(return_data)
+        # print(return_data)
     else:
         print("There is no cross records of the " + party + " party")
     return return_data
@@ -387,6 +432,7 @@ def prediction():
 
             print(return_dict)
             return jsonify(return_dict)
+
 
 
 # if __name__ == '__main__':
