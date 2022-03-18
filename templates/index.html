@@ -170,7 +170,7 @@
                 <input type="password" autocomplete="off" id="pass" name="password" required>
                  </div>
                  <div id="actual-comment-id">
-                    <textarea rows="10" cols="140" id="reply_comment-field-id" type="text" class="text-field w-input" autofocus="true" maxlength="1000" name="reply-Field" data-name="reply Field" placeholder="Reply the comment here" required=""></textarea>
+                    <textarea rows="10" cols="140" id="reply_comment-field-id" type="text" class="text-field w-input" autofocus="true" maxlength="1000" name="reply-Field" data-name="reply Field" placeholder="Enter your reply here" required=""></textarea>
                     <input id="Reply-id" autocomplete="off" type="submit" value="Reply" data-wait="Please wait..." class="submit-button-3 w-button">
                  </div>
             </form>
@@ -423,7 +423,7 @@
                         for (let comment of comment_arr) {
                            reply_comment_list.push(comment.slice(0,7))
 
-                            $('#s2-crawled-topic-id > tbody:last-child').append("<tr><td>" + post.slice(6,post.length)+ "</td><td>" + comment.slice(7,comment.length)+ "</td><td><input id='reply_comment_id' value='Save this comment' type='button' class='comment-button'/></td></tr>");
+                            $('#s2-crawled-topic-id > tbody:last-child').append("<tr><td>" + post.slice(6,post.length)+ "</td><td>" + comment.slice(7,comment.length)+ "</td><td><input id='reply_comment_id' value='Reply' type='button' class='comment-button'/></td></tr>");
                             $('#reply_comment_id').attr('id',comment.slice(0,7));
 
                         }
