@@ -5,8 +5,8 @@ runtime_config:
     python_version: 3.7
 
 resources:
-  cpu: 4
-  memory_gb: 19.6
+  cpu: 6
+  memory_gb: 29.6
   disk_size_gb: 40
 
 liveness_check:
