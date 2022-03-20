@@ -516,7 +516,7 @@
                             for (let comment of comment_arr) {
                                 console.log(post)
                                 console.log(comment)
-                                $('#s3-cross-checking-table-id > tbody:last-child').append("<tr><td><input id='redditor' value='Extract Keywords' type='button' class='keyword-button'/></td><td>" + post+ "</td><td>" + comment+ "</td></tr>");
+                                $('#s3-cross-checking-table-id > tbody:last-child').append("<tr><td><input id='redditor' value='Extract Keywords' type='button' class='keyword-button'/></td><td id='postID'>" + post+ "</td><td>" + comment+ "</td></tr>");
                                 $('#redditor').attr('id',redditorId);
                             }
                             redditor += 1;
@@ -686,7 +686,7 @@
             // Third ajax request
         $('#prediction-form-id').on('submit',function() {
 
-
+            $('#filtered-text-id').empty()
             $('#left-score-id').empty()
             $('#right-score-id').empty()
             $('#hate-score-id').empty()
